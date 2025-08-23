@@ -1,0 +1,15 @@
+{
+  "name": "predator_prey",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "predator_prey_bg.wasm",
+    "predator_prey.js",
+    "predator_prey.d.ts"
+  ],
+  "main": "predator_prey.js",
+  "types": "predator_prey.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
