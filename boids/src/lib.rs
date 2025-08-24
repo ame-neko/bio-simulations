@@ -12,6 +12,7 @@ pub struct Universe {
     ali_weight: f32,
     coh_weight: f32,
     perception: f32,
+    turn_factor: f32,
     max_speed: f32,
 }
 
@@ -32,6 +33,7 @@ impl Universe {
             ali_weight: 1.0,
             coh_weight: 1.0,
             perception: 50.0,
+            turn_factor: 0.1,
             max_speed: 4.0,
         }
     }
@@ -51,6 +53,10 @@ impl Universe {
     pub fn set_perception(&mut self, v: f32) {
         self.perception = v;
     }
+
+    pub fn set_turn_factor(&mut self, v: f32) {
+        self.turn_factor = v;
+    }
     pub fn set_max_speed(&mut self, v: f32) {
         self.max_speed = v;
     }
@@ -67,6 +73,7 @@ impl Universe {
                 self.ali_weight,
                 self.coh_weight,
                 self.perception,
+                self.turn_factor,
                 self.max_speed,
             );
         }

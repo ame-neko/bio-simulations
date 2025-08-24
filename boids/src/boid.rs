@@ -103,14 +103,30 @@ impl Boid {
         ali_weight: f32,
         coh_weight: f32,
         perception: f32,
+        turn_factor: f32,
         max_speed: f32,
     ) {
+        let margin = 50.0;
         let sep = self.separate(neighbors, desired_dist);
         let ali = self.alignment(neighbors);
         let coh = self.cohesion(neighbors);
 
         self.velocity.x = sep.x * sep_weight + ali.x * ali_weight + coh.x * coh_weight;
         self.velocity.y = sep.y * sep_weight + ali.y * ali_weight + coh.y * coh_weight;
+
+
+        if self.position.x < margin {
+            self.velocity.x += turn_factor;
+        }
+        if self.position.x > width - margin {
+            self.velocity.x -= turn_factor;
+        }
+        if self.position.y < margin {
+            self.velocity.y += turn_factor;
+        }
+        if self.position.y > height - margin {
+            self.velocity.y -= turn_factor;
+        }
 
         self.velocity.limit(max_speed);
         self.position.x += self.velocity.x;

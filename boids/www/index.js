@@ -1,13 +1,13 @@
-import { Pane } from "https://cdn.jsdelivr.net/npm/tweakpane@4.0.0/dist/tweakpane.min.js";
+import {Pane} from "https://cdn.jsdelivr.net/npm/tweakpane@4.0.0/dist/tweakpane.min.js";
 
-import init, { Universe } from "./pkg/boids.js";
+import init, {Universe} from "./pkg/boids.js";
 
 const canvas = document.getElementById("boids-canvas");
 const ctx = canvas.getContext("2d");
 
 async function run() {
     const wasm = await init();
-    const mem  = wasm.memory;
+    const mem = wasm.memory;
 
     let uni = new Universe(200, canvas.width, canvas.height);
 
@@ -18,28 +18,30 @@ async function run() {
         alignment: 1.0,
         cohesion: 1.0,
         perception: 50,
+        turn_factor: 0.1,
         maxSpeed: 4.0,
         numBoids: 200,
     };
 
-    pane.addBinding(PARAMS, 'separation', { min: 0, max: 3, step: 0.1 })
+    pane.addBinding(PARAMS, 'separation', {min: 0, max: 3, step: 0.1})
         .on('change', ev => uni.set_sep_weight(ev.value));
 
-    pane.addBinding(PARAMS, 'alignment', { min: 0, max: 3, step: 0.1 })
+    pane.addBinding(PARAMS, 'alignment', {min: 0, max: 3, step: 0.1})
         .on('change', ev => uni.set_ali_weight(ev.value));
 
-    pane.addBinding(PARAMS, 'cohesion', { min: 0, max: 3, step: 0.1 })
+    pane.addBinding(PARAMS, 'cohesion', {min: 0, max: 3, step: 0.1})
         .on('change', ev => uni.set_coh_weight(ev.value));
 
-    pane.addBinding(PARAMS, 'perception', { min: 10, max: 100, step: 1 })
+    pane.addBinding(PARAMS, 'perception', {min: 10, max: 100, step: 1})
         .on('change', ev => uni.set_perception(ev.value));
-
-    pane.addBinding(PARAMS, 'maxSpeed', { min: 1, max: 10, step: 0.1 })
+    pane.addBinding(PARAMS, 'turn_factor', {min: 10, max: 100, step: 1})
+        .on('change', ev => uni.set_turn_factor(ev.value));
+    pane.addBinding(PARAMS, 'maxSpeed', {min: 1, max: 10, step: 0.1})
         .on('change', ev => uni.set_max_speed(ev.value));
 
-    pane.addBinding(PARAMS, 'numBoids', { min: 50, max: 1000, step: 50 });
+    pane.addBinding(PARAMS, 'numBoids', {min: 50, max: 1000, step: 50});
 
-    pane.addButton({ title: 'Re-render Boids' })
+    pane.addButton({title: 'Re-render Boids'})
         .on('click', () => {
             uni = new Universe(
                 PARAMS.numBoids,
@@ -56,7 +58,7 @@ async function run() {
     function render() {
         uni.tick();
 
-        const ptr   = uni.boids_ptr();
+        const ptr = uni.boids_ptr();
         const len32 = uni.len();
         // ★ その都度 view を作る（保持しない）
         const floats = new Float32Array(mem.buffer, ptr, len32);
@@ -70,6 +72,8 @@ async function run() {
         }
         requestAnimationFrame(render);
     }
+
     render();
 }
+
 run();
