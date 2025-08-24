@@ -44,7 +44,7 @@ impl Boid {
             let dy = self.position.y - other.position.y;
             let dist = (dx * dx + dy * dy).sqrt();
 
-            if dist > desired_dist {
+            if dist > 0.0 && dist < desired_dist {
                 count += 1;
                 steer.x += dx / dist;
                 steer.y += dy / dist;
@@ -68,6 +68,9 @@ impl Boid {
         if count > 0 {
             avg.x /= count as f32;
             avg.y /= count as f32;
+
+            avg.x -= self.velocity.x;
+            avg.y -= self.velocity.y;
         }
 
         avg
@@ -111,8 +114,8 @@ impl Boid {
         let ali = self.alignment(neighbors);
         let coh = self.cohesion(neighbors);
 
-        self.velocity.x = sep.x * sep_weight + ali.x * ali_weight + coh.x * coh_weight;
-        self.velocity.y = sep.y * sep_weight + ali.y * ali_weight + coh.y * coh_weight;
+        self.velocity.x += sep.x * sep_weight + ali.x * ali_weight + coh.x * coh_weight;
+        self.velocity.y += sep.y * sep_weight + ali.y * ali_weight + coh.y * coh_weight;
 
 
         if self.position.x < margin {

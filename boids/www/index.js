@@ -14,44 +14,34 @@ async function run() {
     const pane = new Pane();
 
     const PARAMS = {
-        separation: 1.5,
-        alignment: 1.0,
-        cohesion: 1.0,
-        perception: 50,
-        turn_factor: 0.1,
-        maxSpeed: 4.0,
-        numBoids: 200,
+        desired_dist: 20, separation: 1.5, alignment: 1.0, cohesion: 1.0, perception: 50, turn_factor: 1, maxSpeed: 4.0, numBoids: 200,
     };
 
-    pane.addBinding(PARAMS, 'separation', {min: 0, max: 3, step: 0.1})
+    pane.addBinding(PARAMS, 'desired_dist', {min: 0, max: 40, step: 1})
+        .on('change', ev => uni.set_desired_dist(ev.value));
+    pane.addBinding(PARAMS, 'separation', {min: 0, max: 30, step: 0.1})
         .on('change', ev => uni.set_sep_weight(ev.value));
-
     pane.addBinding(PARAMS, 'alignment', {min: 0, max: 3, step: 0.1})
         .on('change', ev => uni.set_ali_weight(ev.value));
-
     pane.addBinding(PARAMS, 'cohesion', {min: 0, max: 3, step: 0.1})
         .on('change', ev => uni.set_coh_weight(ev.value));
-
     pane.addBinding(PARAMS, 'perception', {min: 10, max: 100, step: 1})
         .on('change', ev => uni.set_perception(ev.value));
     pane.addBinding(PARAMS, 'turn_factor', {min: 10, max: 100, step: 1})
         .on('change', ev => uni.set_turn_factor(ev.value));
     pane.addBinding(PARAMS, 'maxSpeed', {min: 1, max: 10, step: 0.1})
         .on('change', ev => uni.set_max_speed(ev.value));
-
     pane.addBinding(PARAMS, 'numBoids', {min: 50, max: 1000, step: 50});
 
     pane.addButton({title: 'Re-render Boids'})
         .on('click', () => {
-            uni = new Universe(
-                PARAMS.numBoids,
-                canvas.width,
-                canvas.height
-            );
+            uni = new Universe(PARAMS.numBoids, canvas.width, canvas.height);
+            uni.set_desired_dist(PARAMS.desired_dist);
             uni.set_sep_weight(PARAMS.separation);
             uni.set_ali_weight(PARAMS.alignment);
             uni.set_coh_weight(PARAMS.cohesion);
             uni.set_perception(PARAMS.perception);
+            uni.set_turn_factor(PARAMS.turn_factor);
             uni.set_max_speed(PARAMS.maxSpeed);
         });
 
