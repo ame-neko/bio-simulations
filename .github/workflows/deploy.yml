@@ -29,6 +29,7 @@ jobs:
             echo "Building $proj..."
             cd "$proj"
             wasm-pack build --target web --out-dir pkg
+            mkdir -p ../www/$proj/
             cp -r pkg ../www/$proj/
             cp www/index.html ../www/$proj/
             cp www/index.js ../www/$proj/
