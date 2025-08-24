@@ -94,7 +94,7 @@ impl Universe {
         self.boids.as_ptr() as *const f32
     }
 
-    pub fn len(&mut self) -> usize {
-        self.boids.len()
+    pub fn boids_len_f32(&self) -> usize {
+        self.boids.len() * 4
     }
 }

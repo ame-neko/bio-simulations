@@ -60,8 +60,7 @@ async function run() {
         uni.tick();
 
         const ptr = uni.boids_ptr();
-        const len32 = uni.len();
-        // ★ その都度 view を作る（保持しない）
+        const len32 = uni.boids_len_f32();
         const floats = new Float32Array(mem.buffer, ptr, len32);
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
