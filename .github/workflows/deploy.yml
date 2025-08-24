@@ -28,7 +28,8 @@ jobs:
           for proj in "${PROJECTS[@]}"; do
             echo "Building $proj..."
             cd "$proj"
-            wasm-pack build --target web --out-dir "../www/$proj/pkg"
+            wasm-pack build --target web --out-dir pkg
+            cp -r pkg ../www/$proj/
             cp www/index.html ../www/$proj/
             cp www/index.js ../www/$proj/
             cd ..
