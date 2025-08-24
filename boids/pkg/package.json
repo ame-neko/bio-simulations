@@ -1,0 +1,15 @@
+{
+  "name": "boids",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "boids_bg.wasm",
+    "boids.js",
+    "boids.d.ts"
+  ],
+  "main": "boids.js",
+  "types": "boids.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
