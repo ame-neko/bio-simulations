@@ -93,15 +93,26 @@ impl Boid {
         }
     }
 
-    pub(crate) fn update(&mut self, neighbors: &[Boid]) {
-        let sep = self.separate(neighbors, 0.0);
+    pub(crate) fn update(
+        &mut self,
+        neighbors: &[Boid],
+        width: f32,
+        height: f32,
+        desired_dist: f32,
+        sep_weight: f32,
+        ali_weight: f32,
+        coh_weight: f32,
+        perception: f32,
+        max_speed: f32,
+    ) {
+        let sep = self.separate(neighbors, desired_dist);
         let ali = self.alignment(neighbors);
         let coh = self.cohesion(neighbors);
 
-        self.velocity.x = sep.x * 150.0 + ali.x * 1.0 + coh.x * 1.0;
-        self.velocity.y = sep.y * 150.0 + ali.y * 1.0 + coh.y * 1.0;
+        self.velocity.x = sep.x * sep_weight + ali.x * ali_weight + coh.x * coh_weight;
+        self.velocity.y = sep.y * sep_weight + ali.y * ali_weight + coh.y * coh_weight;
 
-        self.velocity.limit(4.0);
+        self.velocity.limit(max_speed);
         self.position.x += self.velocity.x;
         self.position.y += self.velocity.y;
     }
