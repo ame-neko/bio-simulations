@@ -1,4 +1,4 @@
-import init, { simulate } from "../pkg/predator_prey.js";
+import init, { simulate } from "./pkg/predator_prey.js";
 
 let chart;
 
