@@ -14,7 +14,7 @@ async function run() {
     const pane = new Pane();
 
     const PARAMS = {
-        desired_dist: 20, separation: 1.5, alignment: 1.0, cohesion: 1.0, perception: 50, turn_factor: 1, maxSpeed: 4.0, numBoids: 200,
+        desired_dist: 20, separation: 5.0, alignment: 1.0, cohesion: 0.1, perception: 200, turn_factor: 1, maxSpeed: 4.0, numBoids: 200,
     };
 
     pane.addBinding(PARAMS, 'desired_dist', {min: 0, max: 40, step: 1})
@@ -25,7 +25,7 @@ async function run() {
         .on('change', ev => uni.set_ali_weight(ev.value));
     pane.addBinding(PARAMS, 'cohesion', {min: 0, max: 3, step: 0.1})
         .on('change', ev => uni.set_coh_weight(ev.value));
-    pane.addBinding(PARAMS, 'perception', {min: 10, max: 100, step: 1})
+    pane.addBinding(PARAMS, 'perception', {min: 10, max: 400, step: 1})
         .on('change', ev => uni.set_perception(ev.value));
     pane.addBinding(PARAMS, 'turn_factor', {min: 10, max: 100, step: 1})
         .on('change', ev => uni.set_turn_factor(ev.value));

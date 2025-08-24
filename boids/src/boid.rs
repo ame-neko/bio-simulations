@@ -36,7 +36,7 @@ impl Boid {
             },
         }
     }
-    fn separate(&self, neighbors: &[Boid], desired_dist: f32) -> Vec2 {
+    fn separate(&self, neighbors: &[Boid], desired_dist: f32, perception: f32) -> Vec2 {
         let mut steer = Vec2 { x: 0.0, y: 0.0 };
         let mut count = 0;
         for other in neighbors {
@@ -44,7 +44,7 @@ impl Boid {
             let dy = self.position.y - other.position.y;
             let dist = (dx * dx + dy * dy).sqrt();
 
-            if dist > 0.0 && dist < desired_dist {
+            if dist > 0.0 && dist < desired_dist && dist < perception {
                 count += 1;
                 steer.x += dx / dist;
                 steer.y += dy / dist;
@@ -57,13 +57,20 @@ impl Boid {
         steer
     }
 
-    fn alignment(&self, neighbors: &[Boid]) -> Vec2 {
+    fn alignment(&self, neighbors: &[Boid], perception: f32) -> Vec2 {
         let mut avg = Vec2 { x: 0.0, y: 0.0 };
         let mut count = 0;
         for other in neighbors {
             count += 1;
-            avg.x += other.velocity.x;
-            avg.y += other.velocity.y;
+            let dx = self.position.x - other.position.x;
+            let dy = self.position.y - other.position.y;
+            let dist = (dx * dx + dy * dy).sqrt();
+
+            if dist > 0.0 && dist < perception {
+                avg.x += other.velocity.x;
+                avg.y += other.velocity.y;
+                count += 1;
+            }
         }
         if count > 0 {
             avg.x /= count as f32;
@@ -76,13 +83,20 @@ impl Boid {
         avg
     }
 
-    fn cohesion(&self, neighbors: &[Boid]) -> Vec2 {
+    fn cohesion(&self, neighbors: &[Boid], perception: f32) -> Vec2 {
         let mut center = Vec2 { x: 0.0, y: 0.0 };
         let mut count = 0;
         for other in neighbors {
-            count += 1;
-            center.x += other.position.x;
-            center.y += other.position.y;
+            let dx = self.position.x - other.position.x;
+            let dy = self.position.y - other.position.y;
+            let dist = (dx * dx + dy * dy).sqrt();
+
+            // 🔧 視野半径でフィルタ & 自分自身除外
+            if dist > 0.0 && dist < perception {
+                center.x += other.position.x;
+                center.y += other.position.y;
+                count += 1;
+            }
         }
         if count > 0 {
             center.x /= count as f32;
@@ -110,13 +124,12 @@ impl Boid {
         max_speed: f32,
     ) {
         let margin = 50.0;
-        let sep = self.separate(neighbors, desired_dist);
-        let ali = self.alignment(neighbors);
-        let coh = self.cohesion(neighbors);
+        let sep = self.separate(neighbors, desired_dist, perception);
+        let ali = self.alignment(neighbors, perception);
+        let coh = self.cohesion(neighbors, perception);
 
         self.velocity.x += sep.x * sep_weight + ali.x * ali_weight + coh.x * coh_weight;
         self.velocity.y += sep.y * sep_weight + ali.y * ali_weight + coh.y * coh_weight;
-
 
         if self.position.x < margin {
             self.velocity.x += turn_factor;
