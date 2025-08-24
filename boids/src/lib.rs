@@ -1,3 +1,4 @@
+use rand::rngs::ThreadRng;
 use wasm_bindgen::prelude::*;
 mod boid;
 use boid::{Boid};
@@ -14,6 +15,8 @@ pub struct Universe {
     perception: f32,
     turn_factor: f32,
     max_speed: f32,
+    noise: f32,
+    rng: ThreadRng,
 }
 
 #[wasm_bindgen]
@@ -21,6 +24,7 @@ impl Universe {
     #[wasm_bindgen(constructor)]
     pub fn new(num_boids: usize, w: f32, h: f32) -> Universe {
         let mut boids = Vec::new();
+        let mut rng = rand::thread_rng();
         for _ in 0..num_boids {
             boids.push(Boid::random(w, h));
         }
@@ -35,6 +39,8 @@ impl Universe {
             perception: 50.0,
             turn_factor: 0.1,
             max_speed: 4.0,
+            noise: 1.0,
+            rng,
         }
     }
 
@@ -60,6 +66,9 @@ impl Universe {
     pub fn set_max_speed(&mut self, v: f32) {
         self.max_speed = v;
     }
+    pub fn set_noise(&mut self, v: f32) {
+        self.noise = v;
+    }
 
     pub fn tick(&mut self) {
         let boids_closne = self.boids.clone();
@@ -75,6 +84,8 @@ impl Universe {
                 self.perception,
                 self.turn_factor,
                 self.max_speed,
+                self.noise,
+                &mut self.rng,
             );
         }
     }

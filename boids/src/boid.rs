@@ -121,6 +121,8 @@ impl Boid {
         perception: f32,
         turn_factor: f32,
         max_speed: f32,
+        noise: f32,
+        rng: &mut impl Rng,
     ) {
         let margin = 50.0;
         let sep = self.separate(neighbors, desired_dist, perception);
@@ -141,6 +143,12 @@ impl Boid {
         }
         if self.position.y > height - margin {
             self.velocity.y -= turn_factor;
+        }
+
+        if noise > 0.0 {
+            self.velocity.x += rng.random_range(-noise..noise);
+            self.velocity.y += rng.random_range(-noise..noise);
+
         }
 
         self.velocity.limit(max_speed);

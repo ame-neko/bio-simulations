@@ -14,8 +14,17 @@ async function run() {
     const pane = new Pane();
 
     const PARAMS = {
-        desired_dist: 20, separation: 5.0, alignment: 1.0, cohesion: 0.1, perception: 200, turn_factor: 1, maxSpeed: 4.0, numBoids: 200,
+        desired_dist: 20, separation: 5.0, alignment: 1.0, cohesion: 0.1, perception: 200, turn_factor: 1, maxSpeed: 4.0, numBoids: 200, noise: 1.0,
     };
+
+    uni.set_desired_dist(PARAMS.desired_dist);
+    uni.set_sep_weight(PARAMS.separation);
+    uni.set_ali_weight(PARAMS.alignment);
+    uni.set_coh_weight(PARAMS.cohesion);
+    uni.set_perception(PARAMS.perception);
+    uni.set_turn_factor(PARAMS.turn_factor);
+    uni.set_max_speed(PARAMS.maxSpeed);
+    uni.set_noise(PARAMS.noise);
 
     pane.addBinding(PARAMS, 'desired_dist', {min: 0, max: 40, step: 1})
         .on('change', ev => uni.set_desired_dist(ev.value));
@@ -31,6 +40,8 @@ async function run() {
         .on('change', ev => uni.set_turn_factor(ev.value));
     pane.addBinding(PARAMS, 'maxSpeed', {min: 1, max: 10, step: 0.1})
         .on('change', ev => uni.set_max_speed(ev.value));
+    pane.addBinding(PARAMS, 'noise', {min: 0, max: 10, step: 0.1})
+        .on('change', ev => uni.set_noise(ev.value));
     pane.addBinding(PARAMS, 'numBoids', {min: 50, max: 1000, step: 50});
 
     pane.addButton({title: 'Re-render Boids'})
