@@ -61,7 +61,6 @@ impl Boid {
         let mut avg = Vec2 { x: 0.0, y: 0.0 };
         let mut count = 0;
         for other in neighbors {
-            count += 1;
             let dx = self.position.x - other.position.x;
             let dy = self.position.y - other.position.y;
             let dist = (dx * dx + dy * dy).sqrt();
