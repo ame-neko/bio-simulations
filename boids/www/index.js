@@ -5,17 +5,26 @@ import init, {Universe} from "./pkg/boids.js";
 const canvas = document.getElementById("boids-canvas");
 const ctx = canvas.getContext("2d");
 
+function resizeCanvas() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+// 初期化時とリサイズ時に呼ぶ
+resizeCanvas();
+
+
 async function run() {
     const wasm = await init();
     const mem = wasm.memory;
 
-    let uni = new Universe(200, canvas.width, canvas.height);
-
-    const pane = new Pane();
-
     const PARAMS = {
         desired_dist: 20, separation: 5.0, alignment: 1.0, cohesion: 0.1, perception: 200, turn_factor: 1, maxSpeed: 4.0, numBoids: 200, noise: 1.0,
     };
+
+    let uni = new Universe(PARAMS.numBoids, canvas.width, canvas.height);
+
+    const pane = new Pane();
 
     uni.set_desired_dist(PARAMS.desired_dist);
     uni.set_sep_weight(PARAMS.separation);
@@ -55,6 +64,12 @@ async function run() {
             uni.set_turn_factor(PARAMS.turn_factor);
             uni.set_max_speed(PARAMS.maxSpeed);
         });
+
+    window.addEventListener("resize", () => {
+        resizeCanvas();
+        // Universe のサイズも更新（再生成でもOK）
+        uni = new Universe(PARAMS.numBoids, canvas.width, canvas.height);
+    });
 
     function render() {
         uni.tick();
