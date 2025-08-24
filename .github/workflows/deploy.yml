@@ -24,7 +24,7 @@ jobs:
 
       - name: Build wasm for all projects
         run: |
-          PROJECTS=("predator_prey")
+          PROJECTS=("predator_prey" "boids")
           for proj in "${PROJECTS[@]}"; do
             echo "Building $proj..."
             cd "$proj"
