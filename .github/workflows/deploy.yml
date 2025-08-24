@@ -22,14 +22,19 @@ jobs:
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
-      - name: Build wasm
-        run: wasm-pack build --target web --out-dir www/pkg
+      - name: Build wasm for all projects
+        run: |
+          PROJECTS=("predator_prey")
+          for proj in "${PROJECTS[@]}"; do
+            echo "Building $proj..."
+            cd "$proj"
+            wasm-pack build --target web --out-dir "../www/$proj/pkg"
+            cd ..
+          done
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./www
-          destination_dir: predator_prey
           publish_branch: gh-pages
-
